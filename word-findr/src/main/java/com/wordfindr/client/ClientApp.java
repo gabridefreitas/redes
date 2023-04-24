@@ -9,19 +9,21 @@ public class ClientApp {
 
     public static void main(String[] args) throws Exception {
 
-        String frase;
-        String fraseModificada;
-
-        BufferedReader doUsuario = new BufferedReader(new InputStreamReader(System.in));
-        Socket socketCliente = new Socket("127.0.0.1", 6789);
-        DataOutputStream paraServidor = new DataOutputStream(socketCliente.getOutputStream());
-        BufferedReader doServidor = new BufferedReader(new InputStreamReader(socketCliente.getInputStream()));
+        Socket socket = new Socket("127.0.0.1", 6789);
+        BufferedReader buffer = new BufferedReader(new InputStreamReader(System.in));
+        DataOutputStream user = new DataOutputStream(socket.getOutputStream());
+        BufferedReader server = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
         System.out.print("Digite uma frase: ");
-        frase = doUsuario.readLine();
-        paraServidor.writeBytes(frase + '\n');
-        fraseModificada = doServidor.readLine();
-        System.out.println("Do Servidor: " + fraseModificada);
-        socketCliente.close();
+        user.writeBytes(buffer.readLine() + '\n');
+
+        System.out.println(server.readLine());
+
+        while (true) {
+            System.out.println(server.readLine());
+            user.writeBytes(buffer.readLine() + '\n');
+        }
+
+        // socket.close();
     }
 }
