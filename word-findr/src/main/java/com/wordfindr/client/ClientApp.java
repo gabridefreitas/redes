@@ -1,4 +1,4 @@
-package com.wordfindr;
+package com.wordfindr.client;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

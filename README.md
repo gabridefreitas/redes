@@ -1,3 +1,7 @@
+# Redes de Computadores: Aplicação e Transporte
+
+Projetos da atividade acadêmica:
+
 ## WordFindr - Trabalho GA
 
 - Integrantes:
@@ -5,16 +9,13 @@
   - Gabriel de Freitas Adolfo
   - Mathias Daniel Hahner
 
-
 - Requisitos:
   - 2-4 jogadores
-
 
 - Servidor:
   - Sorteia um jogadorX para definir a palavra
   - Sorteia a ordem dos demais jogadores
   - Requisita ao jogadorX uma palavra para ser adivinhada pelos outros jogadores
-
 
 - Game loop:
   - Servidor chama próximo jogador da lista para informar uma letra
