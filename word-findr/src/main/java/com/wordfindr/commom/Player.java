@@ -14,6 +14,7 @@ public class Player implements Cloneable, Serializable {
     private int requestedHints;
     private Socket connection;
     private ArrayList<String> guesses;
+    private int numberErrors;
 
     public Player(String name, Socket connection) {
         this.score = 0;
@@ -21,6 +22,7 @@ public class Player implements Cloneable, Serializable {
         this.requestedHints = 0;
         this.connection = connection;
         this.guesses = new ArrayList<>();
+        this.numberErrors = 0;
     }
 
     @Override
