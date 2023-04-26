@@ -1,65 +1,24 @@
 package com.wordfindr.server;
 
+import lombok.Data;
+
+import java.net.Socket;
 import java.util.ArrayList;
 
+@Data
 public class Player {
-    private int id;
+
     private String name;
     private int score;
     private int requestedHints;
-    private boolean isChallenger;
+    private Socket connection;
     private ArrayList<String> guesses;
 
-    public Player(int id, String name) {
-        this.id = id;
+    public Player(String name, Socket connection) {
         this.name = name;
         this.score = 0;
         this.requestedHints = 0;
-        this.isChallenger = false;
+        this.connection = connection;
         this.guesses = new ArrayList<>();
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public int getRequestedHints() {
-        return requestedHints;
-    }
-
-    public void setRequestedHints(int requestedHints) {
-        this.requestedHints = requestedHints;
-    }
-
-    public boolean isChallenger() {
-        return isChallenger;
-    }
-
-    public void setChallenger(boolean isChallenger) {
-        this.isChallenger = isChallenger;
-    }
-
-    public ArrayList<String> getGuesses() {
-        return guesses;
     }
 }
