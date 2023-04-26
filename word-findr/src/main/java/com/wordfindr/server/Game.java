@@ -1,12 +1,13 @@
 package com.wordfindr.server;
 
+import com.wordfindr.commom.Message;
+import com.wordfindr.commom.Player;
 import lombok.Data;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+
+import static com.wordfindr.commom.Commands.SECRET_GUESS;
+import static com.wordfindr.commom.Commands.SET_SECRET;
 
 @Data
 public class Game {
@@ -27,30 +28,22 @@ public class Game {
         this.guesses = new ArrayList<>();
     }
 
-    public void start() throws InterruptedException {
-        setChallenger();
-        setSecret();
+    public void start() {
 
-        System.out.printf("Game started - Challenger: %s, Secret: %s\n", challenger.getName(), secret);
+        setChallenger();
+        System.out.printf("Challenger: %s\n", challenger.getName());
+
+        requestSecret();
+        System.out.printf("Secret: %s\n", secret);
 
         while (!finished) {
-            round++;
-            System.out.println("Round: " + round);
+            System.out.println("Round: " + round++);
 
             for (Player player : players) {
-                if (player.equals(challenger)) {
-                    System.out.printf("Player %s is challenger\n", player.getName());
-                } else {
-                    System.out.printf("Player %s is not challenger\n", player.getName());
+                if (!player.equals(challenger)) {
+                    requestGuess(player);
                 }
             }
-
-            Thread.sleep(5000);
-
-            // Ask for hint
-            // Ask for guess
-            // Check if guess is correct
-            // Check if game is finished
         }
     }
 
@@ -59,16 +52,13 @@ public class Game {
         challenger = players.get(randomPlayer);
     }
 
-    private void setSecret() {
-        try {
-            DataOutputStream serverStream = new DataOutputStream(challenger.getConnection().getOutputStream());
-            BufferedReader clientBuffer = new BufferedReader(
-                    new InputStreamReader(challenger.getConnection().getInputStream()));
+    private void requestSecret() {
+        Message.sendMessage(SET_SECRET, "", challenger);
+        secret = Message.readMessage(challenger.getConnection()).getBody();
+    }
 
-            serverStream.writeBytes("You are challenger. Define secret word:\n");
-            secret = clientBuffer.readLine();
-        } catch (IOException e) {
-            System.out.println("Error to get secret from challenger");
-        }
+    private void requestGuess(Player player) {
+        Message.sendMessage(SECRET_GUESS, "", player);
+        player.getGuesses().add(Message.readMessage(player.getConnection()).getBody());
     }
 }

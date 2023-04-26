@@ -1,75 +1,54 @@
 package com.wordfindr.server;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
+import com.wordfindr.commom.Message;
+import com.wordfindr.commom.Player;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import static com.wordfindr.server.Commands.FORCE_GAME_START;
+import static com.wordfindr.commom.Commands.CONNECT_PLAYER;
 
 public class ServerApp {
 
-    private static final int MIN_CONNECTED_PLAYERS = 2;
-    private static final int MAX_CONNECTED_PLAYERS = 4;
+    private static final int MAX_CONNECTED_PLAYERS = 2;
 
-    private static boolean shouldStartGame = false;
-    private static ServerSocket serverSocket;
     private static ArrayList<Player> players;
 
     public static void main(String[] args) throws Exception {
 
-        serverSocket = new ServerSocket(6789);
+        ServerSocket serverSocket = new ServerSocket(6789);
         players = new ArrayList<>();
 
         while (true) {
-            if (!shouldStartGame) {
-                System.out.println("Server: Connections: " + players.size());
-                connect();
+            System.out.println("Server: Connections: " + players.size());
+
+            if (players.size() < MAX_CONNECTED_PLAYERS) {
+                System.out.println("Server: Waiting for connection...");
+                connect(serverSocket.accept());
             } else {
                 System.out.println("Server: Starting game...");
 
                 Game game = new Game(players);
                 game.start();
 
-                // if (finished) {
-                // System.out.println("Server: Game finished. Closing connections...");
-                // for (Socket connection : connections) {
-                // connection.close();
-                // }
-
-                // break;
-                // }
+                System.out.println("Server: Finishing game...");
+                break;
             }
         }
     }
 
-    private static void connect() throws Exception {
-        if (players.size() < MAX_CONNECTED_PLAYERS) {
-            System.out.println("Server: Waiting for connection...");
+    private static void connect(Socket connection) {
+        Message message = Message.readMessage(connection);
 
-            shouldStartGame = handleConnection(serverSocket.accept());
+        if (message.getType().equals(CONNECT_PLAYER)) {
+            Player player = new Player(message.getBody(), connection);
+            Message.sendMessage(CONNECT_PLAYER, "", player);
+
+            players.add(player);
+            System.out.printf("Server: Player %s connected...\n", message.getBody());
         } else {
-            shouldStartGame = true;
-        }
-    }
-
-    private static boolean handleConnection(Socket connection) throws Exception {
-        BufferedReader clientBuffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        DataOutputStream serverStream = new DataOutputStream(connection.getOutputStream());
-
-        String clientInput = clientBuffer.readLine();
-
-        if (clientInput.equals(FORCE_GAME_START.getValue()) && players.size() >= MIN_CONNECTED_PLAYERS) {
-            serverStream.writeBytes("Starting game...\n");
-            return true;
-        } else {
-            System.out.printf("Server: Player %s connected. Waiting for more players...\n", clientInput);
-
-            players.add(new Player(clientInput, connection));
-            serverStream.writeBytes("Connected to server. Waiting for more players...\n");
-            return false;
+            System.out.printf("Server: Player %s cannot be connected...\n", message.getBody());
         }
     }
 }
