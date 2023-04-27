@@ -20,6 +20,8 @@ public class ClientApp {
 
         Socket socket = new Socket("127.0.0.1", 6789);
         BufferedReader buffer = new BufferedReader(new InputStreamReader(System.in));
+        boolean isGuesser = true;
+        String secret = EMPTY_TEXT;
 
         Utils.log("Welcome to Word Findr!");
         Utils.input("What is your name? ");
@@ -34,27 +36,28 @@ public class ClientApp {
             Message message = Message.readMessage(socket);
             player = message.getPlayer();
 
-            Utils.renderHeader(player, hint);
+            Utils.renderHeader(player, hint, secret, isGuesser);
 
             switch (message.getType()) {
                 case CONNECT:
-                    Utils.log("Connected to server. Waiting for more players...");
+                    Utils.log("Connected to server.");
                     break;
                 case SECRET:
                     Utils.input("You are challenger. Define secret word: ");
                     Message.sendMessage(SECRET, buffer.readLine().toUpperCase(), player);
+                    isGuesser = false;
                     break;
                 case HINT:
                     if (message.getBody().equals(EMPTY_TEXT)) {
                         Utils.input("Provide a hint for secret: ");
                         Message.sendMessage(HINT, buffer.readLine().toUpperCase(), player);
                     } else {
-                        Utils.log(message.getBody());
+                        hint = message.getBody();
                     }
                     break;
                 case GUESS:
                     if (message.getBody().equals(EMPTY_TEXT)) {
-                        Utils.input("Take your guess (Insert a letter): ");
+                        Utils.input("Take your guess (Insert a letter or 1 for hint): ");
 
                         String guess = buffer.readLine().toUpperCase();
                         String errorMessage = Utils.validateGuess(guess);
@@ -62,12 +65,15 @@ public class ClientApp {
                         if (!errorMessage.isBlank()) {
                             Utils.log(errorMessage);
                         } else {
-                            Message.sendMessage(GUESS, guess, player);
-                            Message.sendMessage(HINT, "", player);
+                            if (guess.equals("1")) {
+                                Message.sendMessage(HINT, "", player);
+                            } else {
+                                Message.sendMessage(GUESS, guess, player);
+                            }
                         }
 
                     } else {
-                        Utils.log(message.getBody());
+                        secret = message.getBody();
                     }
                     break;
                 default:
