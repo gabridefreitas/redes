@@ -1,11 +1,11 @@
 package com.wordfindr.commom;
 
-import lombok.Data;
-
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
+
+import lombok.Data;
 
 @Data
 public class Message implements Serializable {
@@ -14,7 +14,8 @@ public class Message implements Serializable {
     private String body;
     private Player player;
 
-    public Message() {}
+    public Message() {
+    }
 
     public Message(Commands type, String body, Player player) {
         this.type = type;

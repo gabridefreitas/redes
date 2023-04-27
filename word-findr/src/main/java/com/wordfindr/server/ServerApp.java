@@ -1,18 +1,17 @@
 package com.wordfindr.server;
 
-import com.wordfindr.commom.Message;
-import com.wordfindr.commom.Player;
+import static com.wordfindr.commom.Commands.CONNECT;
 
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import static com.wordfindr.commom.Commands.CONNECT_PLAYER;
+import com.wordfindr.commom.Message;
+import com.wordfindr.commom.Player;
 
 public class ServerApp {
 
     private static final int MAX_CONNECTED_PLAYERS = 2;
-
     private static ArrayList<Player> players;
 
     public static void main(String[] args) throws Exception {
@@ -36,14 +35,16 @@ public class ServerApp {
                 break;
             }
         }
+
+        serverSocket.close();
     }
 
     private static void connect(Socket connection) {
         Message message = Message.readMessage(connection);
 
-        if (message.getType().equals(CONNECT_PLAYER)) {
-            Player player = new Player(message.getBody(), connection);
-            Message.sendMessage(CONNECT_PLAYER, "", player);
+        if (message.getType().equals(CONNECT)) {
+            Player player = message.getPlayer();
+            Message.sendMessage(CONNECT, "", player);
 
             players.add(player);
             System.out.printf("Server: Player %s connected...\n", message.getBody());

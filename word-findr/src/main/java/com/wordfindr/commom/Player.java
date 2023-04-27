@@ -1,28 +1,26 @@
 package com.wordfindr.commom;
 
-import lombok.Data;
-
 import java.io.Serializable;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import lombok.Data;
+
 @Data
 public class Player implements Cloneable, Serializable {
 
-    private int score;
     private String name;
+    private int numberErrors;
     private int requestedHints;
     private Socket connection;
-    private ArrayList<String> guesses;
-    private int numberErrors;
+    private ArrayList<Character> guesses;
 
     public Player(String name, Socket connection) {
-        this.score = 0;
         this.name = name;
+        this.numberErrors = 0;
         this.requestedHints = 0;
         this.connection = connection;
         this.guesses = new ArrayList<>();
-        this.numberErrors = 0;
     }
 
     @Override
@@ -30,5 +28,18 @@ public class Player implements Cloneable, Serializable {
         Player clone = (Player) super.clone();
         clone.setConnection(null);
         return clone;
+    }
+
+    public String toStringGuesses() {
+        StringBuilder sb = new StringBuilder("[");
+
+        for (Character guess : guesses) {
+            sb.append(guess);
+            sb.append(" ");
+        }
+
+        sb.append("]");
+
+        return sb.toString();
     }
 }
