@@ -25,17 +25,20 @@ public abstract class Utils {
       return "";
    }
 
-   static public void renderHeader(Player player, String hint) {
+   static public void renderHeader(Player player, String hint, boolean isChallenger) {
       log("WordFindr");
       System.out.println("==========================================");
       System.out.printf("Player: %s\n", player.getName());
-      System.out.printf("Guesses: %s\n", player.toStringGuesses());
+
+      if (!isChallenger){
+          System.out.printf("Guesses: %s\n", player.toStringGuesses());
+          System.out.printf("Errors: %d\n", player.getNumberErrors());
+      }
 
       if (!hint.isBlank()) {
          System.out.printf("Hint: %s\n", hint);
       }
 
-      System.out.printf("Errors: %d\n", player.getNumberErrors());
       System.out.println("==========================================");
    }
 }
