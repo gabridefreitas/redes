@@ -1,20 +1,28 @@
-# Redes
+# Redes de Computadores: Aplicação e Transporte
 
-## WordFindr - GA
+Projetos da atividade acadêmica:
 
-    - Daniel Panno Santos, Gabriel de Freitas Adolfo e Mathias Daniel Hahner
+## WordFindr - Trabalho GA
 
-    - Requisitos: 2-4 jogadores
+- Integrantes:
 
-    - Servidor:
-        - Sorteia um jogadorX para definir a palavra
-        - Sorteia a ordem dos demais jogadores
-        - Requisita ao jogadorX uma palavra para ser adivinhada pelos outros jogadores
+  - Daniel Panno Santos
+  - Gabriel de Freitas Adolfo
+  - Mathias Daniel Hahner
 
-        - Game loop:
-        - Servidor chama próximo jogador da lista para informar uma letra
-        - Cliente envia um palpite para servidor
-        - Servidor retorna informações sobre o palpite
-        - Após dois erros o jogador pode solicitar uma dica para o servidor, durante sua rodada
-        - Após três erros o jogador perde e o jogadorX marca um ponto
-        - Se o jogador descobrir a palavra ele marca um ponto
+- Requisitos:
+
+  - 2 jogadores
+
+- Servidor:
+
+  - Sorteia um jogadorX para definir a palavra
+  - Requisita ao jogadorX uma palavra para ser adivinhada pelo jogadorY
+
+- Game loop:
+  - Servidor chama o jogadorY para informar uma letra
+  - Cliente envia um palpite para servidor
+  - Servidor retorna informações sobre o palpite
+  - Após dois erros o jogadorY pode solicitar uma dica para o servidor
+  - Após três erros o jogadorX é o vencedor
+  - Se o jogadorY descobrir a palavra ele é o vencedor
